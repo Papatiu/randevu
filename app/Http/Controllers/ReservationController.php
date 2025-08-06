@@ -16,25 +16,31 @@ class ReservationController extends Controller
         for ($i = 0; $i < 7; $i++) {
             $date = Carbon::now()->addDays($i)->format('Y-m-d');
 
+            // O güne ait tüm slotları çek
             $slots = Slot::where('sport_id', $sport_id)
                 ->whereDate('tarih', $date)
                 ->get();
 
+            // Toplam slot ve dolu slot sayısını hesapla
             $total = $slots->count();
-            $full = $slots->where('rezervasyon_sayisi', '>=', 1)->count();
+            $full = $slots->where('rezervasyon_sayisi', '>=', 1)->count(); // Kapasite 1 olduğu için
 
+            // Toplam slot yoksa o günü gösterme (opsiyonel)
             if ($total == 0) {
-                $status = 'green';
-            } elseif ($full == $total) {
-                $status = 'red';
+                continue;
+            }
+
+            // Renk durumunu belirle
+            if ($full == $total) {
+                $status = 'red'; // Tümü dolu
             } elseif ($full > 0) {
-                $status = 'yellow';
+                $status = 'yellow'; // Bazıları dolu (yarı dolu)
             } else {
-                $status = 'green';
+                $status = 'green'; // Hepsi boş
             }
 
             $dates[] = [
-                'date' => $date, // JS tarafında date olarak kullanılıyor
+                'date' => $date,
                 'status' => $status,
             ];
         }
@@ -62,7 +68,7 @@ class ReservationController extends Controller
     public function makeReservation(Request $request)
     {
         $validated = $request->validate([
-            'sport_id' => 'required|integer',
+            'sport_id' => 'required|exists:sports,id',
             'tarih' => 'required|date',
             'saat' => 'required'
         ]);
@@ -72,22 +78,19 @@ class ReservationController extends Controller
             ->where('saat', $validated['saat'])
             ->first();
 
-        if (!$slot) {
-            return response()->json(['message' => 'Uygun saat bulunamadı.'], 404);
+        if (!$slot || $slot->rezervasyon_sayisi >= $slot->kapasite) {
+            // Hatalı veya dolu bir slota istek gelirse ana sayfaya hata mesajıyla yönlendir.
+            return redirect()->route('home')->with('error', 'Bu saat rezerve edilemez veya dolu!');
         }
 
-        if ($slot->rezervasyon_sayisi >= 1) {
-            return response()->json(['message' => 'Bu saat dolu.'], 403);
-        }
-
-        $slot->rezervasyon_sayisi += 1;
-        $slot->save();
+        $slot->increment('rezervasyon_sayisi');
 
         Reservation::create([
             'user_id' => auth()->id(),
             'slot_id' => $slot->id
         ]);
 
-        return response()->json(['message' => 'Randevunuz başarıyla alındı.']);
+        // BAŞARILI OLURSA: Ana sayfaya başarı mesajıyla yönlendir.
+        return redirect()->route('home')->with('success', 'Randevunuz başarıyla alınmıştır!');
     }
 }

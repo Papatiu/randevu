@@ -10,17 +10,6 @@ use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Register Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
-    | provide this functionality without requiring any additional code.
-    |
-    */
-
     use RegistersUsers;
 
     /**
@@ -28,12 +17,10 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/home';
+    protected $redirectTo = '/'; // Kayıt sonrası da ana sayfaya yönlendir.
 
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -41,7 +28,7 @@ class RegisterController extends Controller
     }
 
     /**
-     * Get a validator for an incoming registration request.
+     * Gelen kayıt isteğini doğrula (validation).
      *
      * @param  array  $data
      * @return \Illuminate\Contracts\Validation\Validator
@@ -49,14 +36,19 @@ class RegisterController extends Controller
     protected function validator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
+            'ad' => ['required', 'string', 'max:255'],
+            'soyad' => ['required', 'string', 'max:255'],
+            'tc_kimlik' => ['required', 'string', 'size:11', 'unique:users'],
+            'telefon' => ['required', 'string', 'max:15'],
+            'dogum_tarihi' => ['required', 'date'],
+            'adres' => ['required', 'string'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
     }
 
     /**
-     * Create a new user instance after a valid registration.
+     * Doğrulamadan sonra yeni bir kullanıcı oluştur.
      *
      * @param  array  $data
      * @return \App\Models\User
@@ -64,7 +56,12 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         return User::create([
-            'name' => $data['name'],
+            'ad' => $data['ad'],
+            'soyad' => $data['soyad'],
+            'tc_kimlik' => $data['tc_kimlik'],
+            'telefon' => $data['telefon'],
+            'dogum_tarihi' => $data['dogum_tarihi'],
+            'adres' => $data['adres'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
