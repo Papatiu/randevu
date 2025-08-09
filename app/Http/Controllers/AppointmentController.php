@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BannedTc;
+use App\Models\Setting;
 use App\Services\SmsService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -119,6 +120,8 @@ class AppointmentController extends Controller
             'dogum_yili' => $data['dogum_yili'],
             'telefon' => $data['telefon'],
             'sms_code' => $smsCode,
+            'team_name' => $data['team_name'] ?? null,           // YENİ
+            'participant_count' => $data['participant_count'] ?? null, // YENİ
         ]);
 
         // Kullanıcıya artık test kodunu göndermiyoruz, SMS'i kontrol etmesini istiyoruz.
@@ -156,6 +159,8 @@ class AppointmentController extends Controller
             'telefon' => $appointmentData['telefon'],
             'iptal_kodu' => $iptalKodu,
             'durum' => 'onaylandi',
+            'team_name' => $appointmentData['team_name'] ?? null,           // YENİ
+            'participant_count' => $appointmentData['participant_count'] ?? null, // YENİ
         ]);
 
         $slot->increment('rezervasyon_sayisi');

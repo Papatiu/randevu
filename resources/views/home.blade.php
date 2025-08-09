@@ -159,6 +159,27 @@
             line-height: 1.6;
         }
     </style>
+    <style>
+        .fancy-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #f3f8fc, #d2f1ff);
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .header-title {
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 @endsection
 
 @section('content')
@@ -179,7 +200,7 @@
         </div>
     @endif
 
-  
+
 
 
     <div class="container">
@@ -197,8 +218,10 @@
             </div>
         @endif
         {{-- EKLENECEK KISIM BİTTİ --}}
-        <h1 class="header-title">Spor Etkinlikleri Randevu Sistemi</h1>
-
+        <div class="fancy-title">
+            🏀 <h1 class="header-title">Millet Bahçesi Spor  Randevu Sistemi</h1> ⚽
+        </div>
+        <br>
         <div class="sports-container">
             @foreach ($sports as $sport)
                 <div class="sport-card" id="sport-{{ $sport->id }}"
@@ -282,6 +305,18 @@
                         <div class="mb-3">
                             <label for="telefon" class="form-label">Telefon Numarası</label>
                             <input type="text" class="form-control" id="telefon" placeholder="5XXXXXXXXX">
+                        </div>
+                        <div class="row" id="team-info-section">
+                            <div class="col-md-6 mb-3">
+                                <label for="team_name" class="form-label">Takım Adı (Opsiyonel)</label>
+                                <input type="text" class="form-control" id="team_name"
+                                    placeholder="Takımınızın adını girin">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="participant_count" class="form-label">Kişi Sayısı (Opsiyonel)</label>
+                                <input type="number" class="form-control" id="participant_count" min="1"
+                                    placeholder="Sayı">
+                            </div>
                         </div>
 
                         {{-- KVKK Onay Kutuları --}}
@@ -555,6 +590,8 @@
                 soyad: document.getElementById('soyad').value,
                 dogum_yili: document.getElementById('dogum_yili').value,
                 telefon: document.getElementById('telefon').value,
+                team_name: document.getElementById('team_name').value,
+                participant_count: document.getElementById('participant_count').value,
             };
 
             fetch('/randevu/kimlik-dogrula', {

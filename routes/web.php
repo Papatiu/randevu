@@ -51,12 +51,24 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     Route::post('/appointments/{id}/mark-as-no-show', [DashboardController::class, 'markAsNoShow'])->name('appointments.noshow');
 
+    Route::post('/appointments/{id}/confirm-attendance', [DashboardController::class, 'confirmAttendance'])->name('appointments.confirm_attendance');
+
+
     Route::resource('announcements', AnnouncementController::class);
 
     Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
     Route::post('settings', [SettingController::class, 'store'])->name('settings.store');
 
     Route::resource('notes', NoteController::class); // Notlar için resource route
+
+
+    // -- AYARLAR VE TESİS YÖNETİMİ ROTALARI --
+    Route::get('settings', [SettingController::class, 'index'])->name('settings.index');
+    // Genel Ayarları Güncelleme
+    Route::post('settings/general', [SettingController::class, 'updateGeneralSettings'])->name('settings.general.update');
+    // Spor Tesisleri Yönetimi
+    Route::post('sports', [SettingController::class, 'storeSport'])->name('sports.store');
+    Route::put('sports/{sport}', [SettingController::class, 'updateSport'])->name('sports.update');
 
 
 });
