@@ -57,8 +57,9 @@ class ReservationController extends Controller
 
         foreach ($slots as $slot) {
             $data[] = [
+                'slot_id' => $slot->id, // ÖNEMLİ: slot_id'sini ekledik!
                 'saat' => $slot->saat,
-                'status' => $slot->rezervasyon_sayisi > 0 ? 'full' : 'empty',
+                'status' => $slot->rezervasyon_sayisi >= $slot->kapasite ? 'full' : 'empty',
             ];
         }
 

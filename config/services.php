@@ -34,5 +34,13 @@ return [
             'channel' => env('SLACK_BOT_USER_DEFAULT_CHANNEL'),
         ],
     ],
-
+    // config/services.php
+    'asist_sms' => [
+        'wsdl_url' => env('ASIST_WSDL_URL', 'https://webservice.asistiletisim.com.tr/SmsProxy.asmx?WSDL'),
+        'usercode' => env('ASIST_USERCODE'),
+        'username' => env('ASIST_USERNAME'),
+        'password' => env('ASIST_PASSWORD'),
+        'account_id_otp' => env('ASIST_ACCOUNT_ID_OTP'),
+        'originator' => env('ASIST_ORIGINATOR'),
+    ],
 ];

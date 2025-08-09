@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Sport extends Model
 {
+
+    protected $fillable = ['ad', 'resim', 'notes'];
     public function slots()
     {
         return $this->hasMany(Slot::class);
